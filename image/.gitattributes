@@ -1,0 +1,2 @@
+releases/pc.zip filter=lfs diff=lfs merge=lfs -text
+releases/mobile.zip filter=lfs diff=lfs merge=lfs -text

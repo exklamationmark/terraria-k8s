@@ -2,7 +2,7 @@ RELEASE_DIR := ./image/releases
 PC_SERVER_BUNDLE_URL := https://terraria.org/system/dedicated_servers/archives/000/000/044/original/terraria-server-1421.zip?1617223487
 MOBILE_SERVER_BUNDLE_URL := https://terraria.org/server/MobileTerrariaServer.zip
 
-IMAGE_TAG := 0.0.1
+IMAGE_TAG := v0.0.1
 IMAGE_REPO := exklamationmark/terraria
 IMAGE := ${IMAGE_REPO}:${IMAGE_TAG}
 DOCKERFILE := ./image/Dockerfile

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "terraria.fullname" . }}
+  labels:
+{{ include "terraria.labels" . | indent 4 }}
+data:
+  server.conf: |
+{{ .Values.terraria.settings | indent 4 }}
+    world=/worlds/world.wld
+  tshock.json: |
+{{- if .Values.terraria.tshock }}
+{{ toJson .Values.terraria.tshock | indent 4 }}
+{{- end }}

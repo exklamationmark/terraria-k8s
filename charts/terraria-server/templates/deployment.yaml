@@ -1,0 +1,112 @@
+{{- /*
+*/}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "terraria.fullname" . }}
+  labels:
+{{ include "terraria.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "terraria.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "terraria.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "terraria.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      # initContainers:
+      # - name: init
+      #   image: curlimages/curl:latest
+      #   # command: ["/bin/sh", "-c"]
+      #   # args: ["curl", "-sL", "-o", "/worlds/world.wld", {{ .Values.terraria.overrideWorld }}]
+      #   args: ["-sL", "-o", "/worlds/world.wld", {{ .Values.terraria.overrideWorld | quote }}]
+      #   resources:
+      #     requests:
+      #       cpu: 100m
+      #       memory: 32Mi
+      #     limits:
+      #       cpu: 100m
+      #       memory: 32Mi
+      #   volumeMounts:
+      #   - name: config
+      #     mountPath: /config
+      #   - name: worlds
+      #     mountPath: /worlds
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        tty: true
+        stdin: true
+        command: ["/opt/terraria/pc/TerrariaServer"]
+        args: ["-killinactivesocket", "-config", "/config/server.conf", "-steam", "-lobby", "friends"]
+        # command: ["/bin/sh", "-c", "while true; do sleep 3600; done"]
+        ports:
+          - name: server
+            containerPort: 7777
+            protocol: TCP
+          - name: http
+            containerPort: 7878
+            protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: server
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: server
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: worlds
+          mountPath: /worlds
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "terraria.fullname" . }}
+      - name: worlds
+      {{- if not .Values.persistence.enabled }}
+        emptyDir: {}
+      {{- else }}
+        persistentVolumeClaim:
+          claimName: {{ template "terraria.fullname" . }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

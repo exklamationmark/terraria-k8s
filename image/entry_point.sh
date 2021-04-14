@@ -60,4 +60,7 @@ mono \
 	${TSHOCK_DIR}/TerrariaServer.exe \
 	-config ${DATA_DIR}/server.conf \
 	-configpath ${DATA_DIR} \
+	-killinactivesocket \
+	-steam \
+	-lobby friends \
 	$@

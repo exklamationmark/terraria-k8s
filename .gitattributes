@@ -1,0 +1,4 @@
+image/releases/mobile.zip filter=lfs diff=lfs merge=lfs -text
+image/releases/pc.zip filter=lfs diff=lfs merge=lfs -text
+image/releases/tshock.zip filter=lfs diff=lfs merge=lfs -text
+image/releases/tshock_with_plugins.zip filter=lfs diff=lfs merge=lfs -text

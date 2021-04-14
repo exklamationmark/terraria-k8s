@@ -3,7 +3,7 @@ PC_SERVER_BUNDLE_URL := https://terraria.org/system/dedicated_servers/archives/0
 TSHOCK_RELEASE_URL := https://github.com/Pryaxis/TShock/releases/download/v4.5.0/TShock4.5.0_Terraria1.4.2.1.zip
 MOBILE_SERVER_BUNDLE_URL := https://terraria.org/server/MobileTerrariaServer.zip
 
-IMAGE_TAG := v0.0.1
+IMAGE_TAG := v0.0.3
 IMAGE_REPO := exklamationmark/terraria
 IMAGE := ${IMAGE_REPO}:${IMAGE_TAG}
 DOCKERFILE := ./image/Dockerfile

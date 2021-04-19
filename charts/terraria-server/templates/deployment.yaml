@@ -30,24 +30,6 @@ spec:
       serviceAccountName: {{ template "terraria.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      # initContainers:
-      # - name: init
-      #   image: curlimages/curl:latest
-      #   # command: ["/bin/sh", "-c"]
-      #   # args: ["curl", "-sL", "-o", "/worlds/world.wld", {{ .Values.terraria.overrideWorld }}]
-      #   args: ["-sL", "-o", "/worlds/world.wld", {{ .Values.terraria.overrideWorld | quote }}]
-      #   resources:
-      #     requests:
-      #       cpu: 100m
-      #       memory: 32Mi
-      #     limits:
-      #       cpu: 100m
-      #       memory: 32Mi
-      #   volumeMounts:
-      #   - name: config
-      #     mountPath: /config
-      #   - name: worlds
-      #     mountPath: /worlds
       containers:
       - name: {{ .Chart.Name }}
         securityContext:
@@ -56,8 +38,8 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         tty: true
         stdin: true
-        command: ["/opt/terraria/pc/TerrariaServer"]
-        args: ["-killinactivesocket", "-config", "/config/server.conf", "-steam", "-lobby", "friends"]
+        # command: ["/opt/terraria/pc/TerrariaServer"]
+        # args: ["-killinactivesocket", "-config", "/config/server.conf", "-steam", "-lobby", "friends"]
         # command: ["/bin/sh", "-c", "while true; do sleep 3600; done"]
         ports:
           - name: server
@@ -66,32 +48,35 @@ spec:
           - name: http
             containerPort: 7878
             protocol: TCP
-        livenessProbe:
-          tcpSocket:
-            port: server
-          initialDelaySeconds: 120
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-        readinessProbe:
-          tcpSocket:
-            port: server
-          periodSeconds: 10
-          timeoutSeconds: 1
-          successThreshold: 3
-          failureThreshold: 3
+          - name: metrics
+            containerPort: 9763
+            protocol: TCP
+        # livenessProbe:
+        #   tcpSocket:
+        #     port: server
+        #   initialDelaySeconds: 120
+        #   periodSeconds: 10
+        #   timeoutSeconds: 1
+        #   failureThreshold: 3
+        # readinessProbe:
+        #   tcpSocket:
+        #     port: server
+        #   periodSeconds: 10
+        #   timeoutSeconds: 1
+        #   successThreshold: 3
+        #   failureThreshold: 3
         volumeMounts:
         - name: config
           mountPath: /config
-        - name: worlds
-          mountPath: /worlds
+        - name: data
+          mountPath: /var/terraria
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
       volumes:
       - name: config
         configMap:
           name: {{ template "terraria.fullname" . }}
-      - name: worlds
+      - name: data
       {{- if not .Values.persistence.enabled }}
         emptyDir: {}
       {{- else }}

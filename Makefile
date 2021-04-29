@@ -1,9 +1,9 @@
 RELEASE_DIR := ./image/releases
-PC_SERVER_BUNDLE_URL := https://terraria.org/system/dedicated_servers/archives/000/000/044/original/terraria-server-1421.zip?1617223487
-TSHOCK_RELEASE_URL := https://github.com/Pryaxis/TShock/releases/download/v4.5.0/TShock4.5.0_Terraria1.4.2.1.zip
+PC_SERVER_BUNDLE_URL := https://terraria.org/system/dedicated_servers/archives/000/000/045/original/terraria-server-1422.zip?1619038474
+TSHOCK_RELEASE_URL := https://github.com/Pryaxis/TShock/releases/download/v4.5.2/TShock.4.5.2.Terraria.1.4.2.2a.zip
 MOBILE_SERVER_BUNDLE_URL := https://terraria.org/server/MobileTerrariaServer.zip
 
-IMAGE_TAG := v0.0.4
+IMAGE_TAG := v0.0.6
 IMAGE_REPO := exklamationmark/terraria
 IMAGE := ${IMAGE_REPO}:${IMAGE_TAG}
 DOCKERFILE := ./image/Dockerfile

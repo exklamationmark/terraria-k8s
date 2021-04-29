@@ -12,7 +12,7 @@ RUN mkdir -p /tmp/terraria/mobile
 RUN mkdir -p /tmp/terraria/tshock
 
 RUN unzip /tmp/releases/pc.zip -d /tmp/terraria/pc
-RUN mv /tmp/terraria/pc/1421/Linux /opt/terraria/pc
+RUN mv /tmp/terraria/pc/1422/Linux /opt/terraria/pc
 RUN chmod +x /opt/terraria/pc/TerrariaServer
 RUN chmod +x /opt/terraria/pc/TerrariaServer.bin.x86_64
 
